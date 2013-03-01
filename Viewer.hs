@@ -3,6 +3,7 @@
 -}
 module Viewer(
     display
+  , viewerSize
   ) where 
 
 import Graphics.PDF
@@ -13,13 +14,15 @@ import qualified Data.ByteString.Lazy as L
 import GHC.IO.Handle(hFlush,hClose)
 
 -- | Convert a Displayable into a PDF byetstream
-getPDFStream :: Displayable a => Int -> Int -> a -> IO L.ByteString
+getPDFStream :: Displayable a b => Int -> Int -> a -> IO L.ByteString
 getPDFStream width height drawingCode = do
     let rect = PDFRect 0 0 width height
+    let (aPdfValue, drawAction) = drawing drawingCode 
     pdfByteString (standardDocInfo { author=toPDFString "haskell", compressed = True}) rect $ do
+        value <- aPdfValue
         page <- addPage Nothing
         drawWithPage page $ do 
-           drawing drawingCode
+           drawAction value
 
 -- | Send the PDF bytestream to the hViewer
 sendStream :: PortNumber -> L.ByteString -> IO ()
@@ -30,9 +33,11 @@ sendStream port stream = withSocketsDo $
        hClose h
 
 -- | Display a Displayable in the OS X hViewer
-display :: Displayable a => a -> IO ()
+display :: Displayable a b => a -> IO ()
 display d = do 
-  stream <- getPDFStream 600 400 d
+  let (w,h) = viewerSize
+  stream <- getPDFStream w h d
   sendStream 9000 stream
 
-
+viewerSize :: (Int,Int)
+viewerSize = (800,600)
