@@ -19,10 +19,10 @@ getPDFStream width height drawingCode = do
     let rect = PDFRect 0 0 width height
     let (aPdfValue, drawAction) = drawing drawingCode 
     pdfByteString (standardDocInfo { author=toPDFString "haskell", compressed = True}) rect $ do
-        value <- aPdfValue
+        value <- aPdfValue width height
         page <- addPage Nothing
         drawWithPage page $ do 
-           drawAction value
+           drawAction value width height
 
 -- | Send the PDF bytestream to the hViewer
 sendStream :: PortNumber -> L.ByteString -> IO ()
@@ -33,7 +33,9 @@ sendStream port stream = withSocketsDo $
        hClose h
 
 -- | Display a Displayable in the OS X hViewer
-display :: Displayable a b => a -> IO ()
+display :: Displayable a b 
+        => a 
+        -> IO ()
 display d = do 
   let (w,h) = viewerSize
   stream <- getPDFStream w h d
