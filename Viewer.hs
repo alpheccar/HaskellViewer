@@ -53,9 +53,9 @@ play :: Playable a
      -> IO ()
 play s = do 
   let (samplingFreq, signal) = sound s 
-      peak = maximum (map abs signal)
-      normSignal = map (/ peak) signal
-      stream = encodeSound samplingFreq normSignal
+      --peak = maximum (map abs signal)
+      --normSignal = map (/ peak) signal
+      stream = encodeSound samplingFreq signal
   --L.writeFile "test.aiff" stream
   sendStream 9000 (L.append playCode stream)  
 
