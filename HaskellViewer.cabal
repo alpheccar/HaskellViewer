@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                HaskellViewer
-version:             0.4.1.0
+version:             0.4.2.1
 synopsis:            Support functions to communicate with the OS X hViewer
 -- description:         
 homepage:            http://www.alpheccar.org
@@ -18,4 +18,4 @@ cabal-version:       >=1.8
 library
   exposed-modules:     Displayable, Viewer, Playable
   other-modules:       AIFF
-  build-depends:       base ==4.6.*, HPDF ==1.4.*, network ==2.4.*, bytestring ==0.10.*
+  build-depends:       base ==4.6.*, HPDF >=1.4.5, network ==2.4.*, bytestring ==0.10.*
